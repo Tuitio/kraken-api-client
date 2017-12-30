@@ -31,6 +31,7 @@ namespace Payward;
  */
 
 class KrakenAPIException extends \ErrorException {};
+class KrakenAPIServiceUnavailableException extends \ErrorException {};
 
 class KrakenAPI
 {
@@ -103,8 +104,12 @@ class KrakenAPI
 
         // verify http code
         $http_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        if($http_code>=400)
+        if($http_code>=400 && $http_code < 500) {
             throw new KrakenAPIException('HTTP code: ' . $http_code);
+        }
+        if($http_code>=500 && $http_code < 600) {
+            throw new KrakenAPIServiceUnavailableException('HTTP code: ' . $http_code);
+        }
 
         // decode results
         $result = json_decode($result, true);
@@ -152,8 +157,12 @@ class KrakenAPI
 
         // verify http code
         $http_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        if($http_code>=400)
+        if($http_code>=400 && $http_code < 500) {
             throw new KrakenAPIException('HTTP code: ' . $http_code);
+        }
+        if($http_code>=500 && $http_code < 600) {
+            throw new KrakenAPIServiceUnavailableException('HTTP code: ' . $http_code);
+        }
 
         // decode results
         $result = json_decode($result, true);
